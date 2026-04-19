@@ -1,5 +1,4 @@
 const express  = require('express')
-const { execSync } = require('child_process')
 const path = require('path')
 const { invalidateCache } = require('../services/metricsService')
 
@@ -11,11 +10,7 @@ router.post('/', async (_req, res) => {
   try {
     console.log('🌱 Re-seeding database via API...')
 
-    const seedPath = path.resolve(__dirname, '../../prisma/seed.js')
-    execSync(`node ${seedPath}`, {
-      stdio: 'inherit',
-      timeout: 30_000,
-    })
+    const seedPath = require('../../prisma/seed.js')
 
     invalidateCache()
 

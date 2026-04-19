@@ -14,6 +14,8 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api'
 })
 
+console.log(import.meta.env.VITE_API_URL)
+
 const fetchFactory = () => api.get('/metrics/factory').then(r => r.data)
 const fetchWorkers = () => api.get('/metrics/workers').then(r => r.data)
 const fetchWorkstations = () => api.get('/metrics/workstations').then(r => r.data)
