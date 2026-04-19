@@ -30,16 +30,22 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
+# Install deps
 COPY package*.json ./
 RUN npm ci --omit=dev
 
+# Prisma
 COPY prisma ./prisma
 RUN npx prisma generate
 
+# Copy app
 COPY . .
 
+# Make entrypoint executable
 RUN chmod +x entrypoint.sh
 
-# EXPOSE 8080
+# Railway uses dynamic PORT (usually 8080)
+ENV PORT=8080
 
-CMD ["./entrypoint.sh"]
+# Important: use CMD, not ENTRYPOINT
+CMD ["sh", "./entrypoint.sh"]

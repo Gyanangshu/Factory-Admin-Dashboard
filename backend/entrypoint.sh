@@ -7,6 +7,8 @@ echo "=============================="
 # Ensure data directory exists
 mkdir -p /app/data
 
+PORT=${PORT:-8080}
+
 echo "→ Applying database schema..."
 npx prisma db push --skip-generate
 
