@@ -20,6 +20,6 @@ RUN mkdir -p /app/data
 # ENV DATABASE_URL="file:/app/data/factory.db"
 # ENV PORT=3001
 
-EXPOSE 3001
+# EXPOSE 3001
 
 ENTRYPOINT ["./entrypoint.sh"]
