@@ -46,6 +46,7 @@ RUN chmod +x entrypoint.sh
 
 # Railway uses dynamic PORT (usually 8080)
 ENV PORT=8080
+EXPOSE 8080 
 
 # Important: use CMD, not ENTRYPOINT
 CMD ["sh", "./entrypoint.sh"]
