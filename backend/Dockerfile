@@ -1,6 +1,32 @@
+# FROM node:20-alpine
+
+# RUN apk add --no-cache openssl 
+
+# WORKDIR /app
+
+# COPY package*.json ./
+# RUN npm ci --omit=dev
+
+# COPY prisma ./prisma
+# RUN npx prisma generate
+
+# # Copy source
+# COPY src ./src
+# COPY entrypoint.sh ./
+# RUN chmod +x entrypoint.sh
+
+# RUN mkdir -p /app/data
+
+# # ENV DATABASE_URL="file:/app/data/factory.db"
+# # ENV PORT=3001
+
+# # EXPOSE 3001
+
+# ENTRYPOINT ["./entrypoint.sh"]
+
 FROM node:20-alpine
 
-RUN apk add --no-cache openssl 
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -10,16 +36,10 @@ RUN npm ci --omit=dev
 COPY prisma ./prisma
 RUN npx prisma generate
 
-# Copy source
-COPY src ./src
-COPY entrypoint.sh ./
+COPY . .
+
 RUN chmod +x entrypoint.sh
 
-RUN mkdir -p /app/data
+# EXPOSE 8080
 
-# ENV DATABASE_URL="file:/app/data/factory.db"
-# ENV PORT=3001
-
-# EXPOSE 3001
-
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./entrypoint.sh"]
