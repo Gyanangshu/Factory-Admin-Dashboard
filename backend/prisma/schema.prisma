@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Worker {
+  id     String  @id
+  name   String
+  events Event[]
+}
+
+model Workstation {
+  id     String  @id
+  name   String
+  type   String
+  events Event[]
+}
+
+model Event {
+  id            String      @id @default(cuid())
+  eventHash     String      @unique
+  timestamp     DateTime
+  workerId      String
+  workstationId String
+  eventType     String
+  confidence    Float
+  count         Int         @default(0)
+  createdAt     DateTime    @default(now())
+
+  worker      Worker      @relation(fields: [workerId], references: [id])
+  workstation Workstation @relation(fields: [workstationId], references: [id])
+
+  @@index([workerId])
+  @@index([workstationId])
+  @@index([timestamp])
+}
