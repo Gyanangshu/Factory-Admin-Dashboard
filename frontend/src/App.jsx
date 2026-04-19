@@ -57,7 +57,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-gray-900 text-white shadow-lg sticky top-0 z-30">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <Factory size={22} className="text-blue-400" />
             <div>
@@ -106,7 +106,7 @@ export default function App() {
 
         {isError && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
-            ⚠️ Could not connect to API. Make sure the backend is running on port 3001.
+            ⚠️ Could not connect to API. Please try again later.
           </div>
         )}
 

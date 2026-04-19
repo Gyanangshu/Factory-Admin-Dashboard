@@ -2,7 +2,7 @@ import { Clock, Package, TrendingUp, Users } from 'lucide-react'
 
 function StatCard({ icon: Icon, label, value, sub, color, loading }) {
   return (
-    <div className="stat-card flex items-start gap-4">
+    <div className="stat-card flex items-start gap-4 shadow-md shadow-blue-100 border-2 border-gray-200">
       <div className={`p-2.5 rounded-lg ${color}`}>
         <Icon size={20} className="text-white" />
       </div>
@@ -27,7 +27,7 @@ export default function FactorySummary({ data, isLoading }) {
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
         Factory Overview
       </h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={Clock}
           label="Total Productive Time"

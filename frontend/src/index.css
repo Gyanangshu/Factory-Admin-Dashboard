@@ -6,6 +6,25 @@
   body {
     @apply bg-gray-50 text-gray-900 antialiased;
   }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #e6e7e8;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+  }
 }
 
 @layer components {
@@ -18,7 +37,7 @@
   }
 
   .util-badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold w-fit;
   }
 
   .util-high   { @apply bg-green-100 text-green-800; }

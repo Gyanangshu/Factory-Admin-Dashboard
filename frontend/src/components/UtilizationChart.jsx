@@ -39,7 +39,7 @@ export default function UtilizationChart({ workers, isLoading }) {
   }))
 
   return (
-    <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+    <section className="bg-white rounded-xl border-2 border-gray-200 shadow-md shadow-blue-100 p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-semibold text-gray-800">Worker Utilization</h2>

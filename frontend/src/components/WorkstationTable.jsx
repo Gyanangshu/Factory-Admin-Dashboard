@@ -3,12 +3,12 @@ import { ChevronUp, ChevronDown, Cpu } from 'lucide-react'
 import { UtilBadge, MiniBar, SkeletonRow } from './shared'
 
 const COLS = [
-  { key: 'name',          label: 'Station' },
-  { key: 'type',          label: 'Type' },
-  { key: 'utilization',   label: 'Utilization' },
+  { key: 'name', label: 'Station' },
+  { key: 'type', label: 'Type' },
+  { key: 'utilization', label: 'Utilization' },
   { key: 'occupancyTime', label: 'Occupancy' },
-  { key: 'unitCount',     label: 'Units' },
-  { key: 'throughputRate',label: 'Throughput' },
+  { key: 'unitCount', label: 'Units' },
+  { key: 'throughputRate', label: 'Throughput' },
 ]
 
 const TYPE_COLORS = {
@@ -45,7 +45,7 @@ export default function WorkstationTable({ workstations, isLoading }) {
   const maxUnits = Math.max(...(workstations || []).map(w => w.unitCount), 1)
 
   return (
-    <section className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <section className="bg-white rounded-xl border-2 border-gray-200 shadow-md shadow-blue-100 overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-100">
         <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
           <Cpu size={14} className="text-violet-500" />

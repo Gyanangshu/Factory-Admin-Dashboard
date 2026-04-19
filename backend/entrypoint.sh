@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "🏭 Factory Dashboard Backend"
+echo "Factory Dashboard Backend"
 echo "=============================="
 
 # Ensure data directory exists

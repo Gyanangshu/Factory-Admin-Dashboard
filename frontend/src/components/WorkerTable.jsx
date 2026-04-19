@@ -37,7 +37,7 @@ export default function WorkerTable({ workers, isLoading, onSelectWorker }) {
   const maxUnits = Math.max(...(workers || []).map(w => w.unitCount), 1)
 
   return (
-    <section className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <section className="bg-white rounded-xl border-2 border-gray-200 shadow-md shadow-blue-100 overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-100">
         <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
           <User size={14} className="text-blue-500" />
@@ -47,7 +47,7 @@ export default function WorkerTable({ workers, isLoading, onSelectWorker }) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm border">
           <thead>
             <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
               {COLS.map(col => (

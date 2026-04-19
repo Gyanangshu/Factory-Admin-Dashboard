@@ -9,14 +9,14 @@ An AI-powered worker productivity dashboard that ingests structured events from 
 ### Option 1: Docker (recommended)
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Gyanangshu/Factory-Admin-Dashboard.git
 cd factory-dashboard
 
 # Build and start both services (auto-seeds on first boot)
 docker compose up --build
 
-# App:     http://localhost:3000
-# API:     http://localhost:3001/api/health
+App:     http://localhost:3000
+API:     http://localhost:3001/api/health
 ```
 
 ### Option 2: Local development
@@ -85,7 +85,7 @@ curl -X POST http://localhost:3001/api/seed
 
 ---
 
-## Architecture Overview
+## Q1. Architecture Overview
 
 ```
 CCTV Cameras → Edge Device → Backend API → SQLite DB
@@ -182,7 +182,7 @@ Indexes on `workerId`, `workstationId`, and `timestamp` for fast metric lookups.
 
 ---
 
-## Resilience & Production Considerations
+## Q2. Resilience & Production Considerations
 
 ### Intermittent Connectivity
 Edge devices buffer events locally when the network is unavailable. On reconnect, they batch-send to `POST /api/events/batch`. The ingestion endpoint is fully idempotent — safe to retry any number of times. Each event carries a client-generated `eventHash` so the server can detect and silently discard duplicates without error.
@@ -197,7 +197,7 @@ Events are stored with their original `timestamp`, not the insertion time (`crea
 
 ---
 
-## ML / CV Operations
+## Q3. ML / CV Operations
 
 ### Model Versioning
 Add a `modelVersion` field (e.g. `"v1.2.0"`) to every ingested event. Store it in the `Event` table. The dashboard can then:
@@ -220,7 +220,7 @@ Three-stage trigger:
 
 ---
 
-## Scaling Strategy
+## Q4. Scaling Strategy
 
 ### 5 cameras (current)
 Single Node.js server + SQLite. No additional infrastructure needed.

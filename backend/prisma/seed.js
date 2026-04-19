@@ -128,7 +128,7 @@ async function main() {
     console.log(`  ✓ ${worker.name} (${worker.id}) → ${stationId}: ${events.length} events`)
   }
 
-  console.log(`\n✅ Seed complete — ${totalEvents} events across 6 workers`)
+  console.log(`\n Seed complete — ${totalEvents} events across 6 workers`)
 }
 
 main()
