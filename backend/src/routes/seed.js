@@ -1,24 +1,135 @@
-const express  = require('express')
-const path = require('path')
+const express = require('express')
+const { PrismaClient } = require('@prisma/client')
+const crypto = require('crypto')
 const { invalidateCache } = require('../services/metricsService')
 
 const router = express.Router()
+const prisma = new PrismaClient()
 
-// POST /api/seed — clears all data and re-seeds with fresh dummy data
-// This lets evaluators refresh the dashboard without touching the DB directly
+const WORKERS = [
+  { id: 'W1', name: 'Alice Kumar' },
+  { id: 'W2', name: 'Bob Singh' },
+  { id: 'W3', name: 'Carol Mehta' },
+  { id: 'W4', name: 'David Sharma' },
+  { id: 'W5', name: 'Eva Patel' },
+  { id: 'W6', name: 'Frank Joshi' },
+]
+
+const WORKSTATIONS = [
+  { id: 'S1', name: 'Assembly Line A', type: 'Assembly' },
+  { id: 'S2', name: 'Assembly Line B', type: 'Assembly' },
+  { id: 'S3', name: 'Quality Control',  type: 'QC' },
+  { id: 'S4', name: 'Packaging',        type: 'Packaging' },
+  { id: 'S5', name: 'Welding Station',  type: 'Welding' },
+  { id: 'S6', name: 'Inspection Bay',   type: 'Inspection' },
+]
+
+const WORKER_STATION = {
+  W1: 'S1', W2: 'S2', W3: 'S3',
+  W4: 'S4', W5: 'S5', W6: 'S6',
+}
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function makeHash(isoTs, workerId, stationId, eventType) {
+  return crypto.createHash('sha256')
+    .update(`${isoTs}|${workerId}|${stationId}|${eventType}`)
+    .digest('hex')
+}
+
+function generateWorkerEvents(workerId, stationId, shiftStartMs, shiftEndMs) {
+  const isLowPerformer = workerId === 'W6'
+  const events = []
+  let t = shiftStartMs
+  let productTimer = randInt(12, 22)
+
+  while (t < shiftEndMs) {
+    const ts = new Date(t)
+    const isoTs = ts.toISOString()
+    let eventType
+    let count = 0
+
+    if (productTimer <= 0) {
+      eventType = 'product_count'
+      count = isLowPerformer ? randInt(1, 3) : randInt(2, 7)
+      productTimer = randInt(15, 28)
+    } else {
+      const r = Math.random()
+      if (isLowPerformer) {
+        if (r < 0.55)      eventType = 'working'
+        else if (r < 0.80) eventType = 'idle'
+        else               eventType = 'absent'
+      } else {
+        if (r < 0.78)      eventType = 'working'
+        else if (r < 0.95) eventType = 'idle'
+        else               eventType = 'absent'
+      }
+    }
+
+    const confidence = parseFloat((0.76 + Math.random() * 0.22).toFixed(3))
+    const hash = makeHash(isoTs, workerId, stationId, eventType)
+
+    events.push({
+      eventHash: hash, timestamp: ts,
+      workerId, workstationId: stationId,
+      eventType, confidence, count,
+    })
+
+    const step = randInt(5, 11)
+    t += step * 60 * 1000
+    productTimer -= step
+  }
+
+  return events
+}
+
+// POST /api/seed
 router.post('/', async (_req, res) => {
   try {
     console.log('🌱 Re-seeding database via API...')
 
-    const seedPath = require('../../prisma/seed.js')
+    // Clear existing data
+    await prisma.event.deleteMany({})
+    await prisma.worker.deleteMany({})
+    await prisma.workstation.deleteMany({})
+
+    // Insert workers and workstations
+    await prisma.worker.createMany({ data: WORKERS })
+    await prisma.workstation.createMany({ data: WORKSTATIONS })
+
+    const shiftStart = new Date('2026-01-15T08:00:00.000Z').getTime()
+    const shiftEnd   = new Date('2026-01-15T16:00:00.000Z').getTime()
+
+    let totalEvents = 0
+
+    for (const worker of WORKERS) {
+      const stationId = WORKER_STATION[worker.id]
+      const events = generateWorkerEvents(worker.id, stationId, shiftStart, shiftEnd)
+
+      for (const event of events) {
+        await prisma.event.upsert({
+          where:  { eventHash: event.eventHash },
+          update: {},
+          create: event,
+        })
+      }
+
+      totalEvents += events.length
+      console.log(`  ✓ ${worker.name} (${worker.id}) → ${stationId}: ${events.length} events`)
+    }
+
+    console.log(`\n Seed complete — ${totalEvents} events across 6 workers`)
 
     invalidateCache()
 
     res.json({
       success: true,
-      message: 'Database re-seeded with fresh dummy data',
+      message: `Database re-seeded with ${totalEvents} events`,
       timestamp: new Date().toISOString(),
     })
+
   } catch (err) {
     console.error('Seed failed:', err.message)
     res.status(500).json({ error: 'Seed failed', message: err.message })
